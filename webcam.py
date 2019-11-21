@@ -1,13 +1,22 @@
-######## Object Detection for Image #########
-# 
+######## Object Detection for Image (PERSON & FACES) #########
+#
 # Author: Samir
 # Date: 14/11/2019
 
-## Some parts of the code is copied from Tensorflow object detection
-## https://github.com/tensorflow/models/blob/master/research/object_detection/object_detection_tutorial.ipynb
+# Some parts of the code is copied from Tensorflow object detection
+# https://github.com/tensorflow/models/blob/master/research/object_detection/object_detection_tutorial.ipynb
 
 
 # Import libraries
+from object_detection.utils import visualization_utils as vis_util
+from object_detection.utils import label_map_util
+from PIL import Image
+from matplotlib import pyplot as plt
+from io import StringIO
+from collections import defaultdict
+import argparse
+import cv2
+import zipfile
 import numpy as np
 import os
 import six.moves.urllib as urllib
@@ -15,16 +24,7 @@ import sys
 import tarfile
 import tensorflow as tf
 print("[INFO] TENSORFLOW VERSION " + tf.__version__)
-import zipfile
-import cv2
-import argparse
 
-from collections import defaultdict
-from io import StringIO
-from matplotlib import pyplot as plt
-from PIL import Image
-from object_detection.utils import label_map_util
-from object_detection.utils import visualization_utils as vis_util
 
 # Define the video stream
 cap = cv2.VideoCapture(0)  # Change only if you have more than one webcams
@@ -39,15 +39,18 @@ args = parser.parse_args()
 print(args.model_option)
 
 if str(args.model_option) == "faces":
-    MODEL_NAME = os.path.join(directPath, 'trained-inference/output_inference_graph_v1_faces')
+    MODEL_NAME = os.path.join(
+        directPath, 'trained-inference/output_inference_graph_v1_faces')
 
     # Path to frozen detection graph. This is the actual model that is used for the object detection.
     PATH_TO_CKPT = MODEL_NAME + '/frozen_inference_graph.pb'
 
     # List of the strings that is used to add correct label for each box.
-    PATH_TO_LABELS = os.path.join(directPath, 'training_faces/facelabelmap.pbtxt')
+    PATH_TO_LABELS = os.path.join(
+        directPath, 'training_faces/facelabelmap.pbtxt')
 elif str(args.model_option) == "person":
-    MODEL_NAME = os.path.join(directPath, 'trained-inference/output_inference_graph_v1')
+    MODEL_NAME = os.path.join(
+        directPath, 'trained-inference/output_inference_graph_v1')
 
     # Path to frozen detection graph. This is the actual model that is used for the object detection.
     PATH_TO_CKPT = MODEL_NAME + '/frozen_inference_graph.pb'
@@ -118,7 +121,7 @@ with detection_graph.as_default():
                 line_thickness=8)
 
             # Display output
-            cv2.imshow('object detection', cv2.resize(image_np, (1200,900)))
+            cv2.imshow('object detection', cv2.resize(image_np, (1200, 900)))
 
             if cv2.waitKey(25) & 0xFF == ord('q'):
                 cv2.destroyAllWindows()

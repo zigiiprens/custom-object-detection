@@ -6,6 +6,7 @@ import requests
 import json
 import numpy as np
 import sys
+import os
 import tensorflow as tf
 print("[INFO] TENSORFLOW VERSION " + tf.__version__)
 
@@ -182,9 +183,14 @@ def run_ssd_mobilenet_v2_tf_optimized_CPU(image: Image, frozen_model_path: str, 
 
     return outputs, inference_time
 
+# What model
+directPath = os.getcwd()
+print(directPath)
+MODEL_PATH = os.path.join(
+        directPath, 'trained-inference/output_inference_graph_v1_faces/frozen_inference_graph.pb')
 
 # Download image
-ssd_mobilenet_v2_origin_path = "/home/samir/developer/python/learn/models/research/object_detection/samirpc/trained-inference/output_inference_graph_v1_faces/frozen_inference_graph.pb"
+ssd_mobilenet_v2_origin_path = MODEL_PATH
 image = get_iamge_by_url(
     "https://leblogdeflorencia.files.wordpress.com/2011/04/img_9962.jpg")
 
@@ -206,4 +212,4 @@ draw_image = draw_bbox_and_label_in_image(
     image, outputs[0][0], int(outputs[3][0]))
 
 # Display output
-# draw_image.show()
+draw_image.show()
