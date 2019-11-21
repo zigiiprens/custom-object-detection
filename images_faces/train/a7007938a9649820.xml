@@ -1,0 +1,50 @@
+<annotation>
+	<folder>Human face</folder>
+	<filename>a7007938a9649820.jpg</filename>
+	<path>/home/samir/developer/python/learn/tools/OIDv4_ToolKit/OID/Dataset_nl/train/Human face/a7007938a9649820.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>1024</width>
+		<height>426</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>face</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>141</xmin>
+			<ymin>81</ymin>
+			<xmax>307</xmax>
+			<ymax>266</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>face</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>492</xmin>
+			<ymin>23</ymin>
+			<xmax>650</xmax>
+			<ymax>227</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>face</name>
+		<pose>Unspecified</pose>
+		<truncated>1</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>743</xmin>
+			<ymin>1</ymin>
+			<xmax>941</xmax>
+			<ymax>172</ymax>
+		</bndbox>
+	</object>
+</annotation>

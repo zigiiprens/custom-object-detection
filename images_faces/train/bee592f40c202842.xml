@@ -1,0 +1,50 @@
+<annotation>
+	<folder>Human face</folder>
+	<filename>bee592f40c202842.jpg</filename>
+	<path>/home/samir/developer/python/learn/tools/OIDv4_ToolKit/OID/Dataset_nl/train/Human face/bee592f40c202842.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>665</width>
+		<height>1024</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>face</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>47</xmin>
+			<ymin>466</ymin>
+			<xmax>143</xmax>
+			<ymax>602</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>face</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>191</xmin>
+			<ymin>430</ymin>
+			<xmax>308</xmax>
+			<ymax>587</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>face</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>313</xmin>
+			<ymin>366</ymin>
+			<xmax>545</xmax>
+			<ymax>630</ymax>
+		</bndbox>
+	</object>
+</annotation>

@@ -1,0 +1,26 @@
+<annotation>
+	<folder>Human face</folder>
+	<filename>691fbebcb10d023e.jpg</filename>
+	<path>/home/samir/developer/python/learn/tools/OIDv4_ToolKit/OID/Dataset_nl/test/Human face/691fbebcb10d023e.jpg</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>768</width>
+		<height>1024</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>face</name>
+		<pose>Unspecified</pose>
+		<truncated>1</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>1</xmin>
+			<ymin>317</ymin>
+			<xmax>102</xmax>
+			<ymax>499</ymax>
+		</bndbox>
+	</object>
+</annotation>
