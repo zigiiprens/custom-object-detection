@@ -17,6 +17,7 @@ import tensorflow as tf
 print("[INFO] TENSORFLOW VERSION " + tf.__version__)
 import zipfile
 import cv2
+import argparse
 
 from collections import defaultdict
 from io import StringIO
@@ -31,13 +32,28 @@ cap = cv2.VideoCapture(0)  # Change only if you have more than one webcams
 # What model
 directPath = os.getcwd()
 print(directPath)
-MODEL_NAME = os.path.join(directPath, 'trained-inference/output_inference_graph_v1_faces')
 
-# Path to frozen detection graph. This is the actual model that is used for the object detection.
-PATH_TO_CKPT = MODEL_NAME + '/frozen_inference_graph.pb'
+parser = argparse.ArgumentParser()
+parser.add_argument("model_option")
+args = parser.parse_args()
+print(args.model_option)
 
-# List of the strings that is used to add correct label for each box.
-PATH_TO_LABELS = os.path.join(directPath, 'training_faces/face_label_map.pbtxt')
+if str(args.model_option) == "faces":
+    MODEL_NAME = os.path.join(directPath, 'trained-inference/output_inference_graph_v1_faces')
+
+    # Path to frozen detection graph. This is the actual model that is used for the object detection.
+    PATH_TO_CKPT = MODEL_NAME + '/frozen_inference_graph.pb'
+
+    # List of the strings that is used to add correct label for each box.
+    PATH_TO_LABELS = os.path.join(directPath, 'training_faces/facelabelmap.pbtxt')
+elif str(args.model_option) == "person":
+    MODEL_NAME = os.path.join(directPath, 'trained-inference/output_inference_graph_v1')
+
+    # Path to frozen detection graph. This is the actual model that is used for the object detection.
+    PATH_TO_CKPT = MODEL_NAME + '/frozen_inference_graph.pb'
+
+    # List of the strings that is used to add correct label for each box.
+    PATH_TO_LABELS = os.path.join(directPath, 'training/labelmap.pbtxt')
 
 # Number of classes to detect
 NUM_CLASSES = 1

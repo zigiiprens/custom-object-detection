@@ -20,17 +20,14 @@ This is about custom object detector using tensorflow object detection API. In t
 	```
 	Pre Processing
 	|
-	└───/images
-	│   │   // All images present()
+	└───/images(images_faces)
 	│   │
 	│   └───/train
-	│   │   	// .xml files of train images 
-	│   │
+	│   │   	// .jpg files of train images 
+	│   │		// .xml files of train images
 	│   └───/test 
 	│		  	// .xml files of test images
-	|
-	└───/data
-	│		// The exported data folder
+	│			// .jpg files of train images
 	│   
 	└─── xml_to_csv.py
 	│   
@@ -105,7 +102,12 @@ The label map file will contain the labels and ids of the object. In this case t
 	│		│	// saved final model
 	│		└─── Other files (frozen_inference...)
 	│
-	└───/trained
+	└───/training
+	│   │
+	│   └─── labelmap.pbtxt
+	│   └─── Other files
+	│
+	└───/training_faces
 	│   │
 	│   └─── labelmap.pbtxt
 	│   └─── Other files
@@ -122,7 +124,7 @@ The label map file will contain the labels and ids of the object. In this case t
 
 ## Trainning a model
 
-Move to object\_detection folder in terminal and execute following command in terminal.
+Execute following command in terminal.
 
 ```
 sh train.sh
@@ -130,11 +132,11 @@ sh train.sh
 
 Above command will train model locally. If want to train in cloud please refer [docs](https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/running_on_cloud.md)
 
-The trainned model will be available at "object\_detection/models/model" folder.
+The trainned model will be available at ```trained_inference/output_inference_graph_v1/saved_model``` folder.
 
 ## Export Frozen Graph
 
-To export frozen_inference\_graph.pb file execute following commad.
+To export "trained_inference/output_inference_graph_v1/frozen_inference_graph.pb" file execute following commad.
 
 ```
 sh export.sh
@@ -142,21 +144,7 @@ sh export.sh
 	
 ## Run and test model
 
-1. Open jupyter notebook.
-
-2. Open "object\_detection\_tutorial.ipynb".
-
-3. Change MODEL\_NAME and PATH\_TO\_FROZEN\_GRAPH.
-.
-4. Remove download codes for DOWNLOAD\_BASE
-
-5. Add images for test in the "test\_images" folder and chand TEST\_IMAGE\_PATHS
-
-6. Run cells.
-
-## Refences
-
-1. [Tensorflow object detection API](https://github.com/tensorflow/models/tree/master/research/object_detection)
+1. Run ```python3 webcam.py```
 
 	
 

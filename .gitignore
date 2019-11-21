@@ -1,8 +1,8 @@
 
-images/test/
+images/test/*
 
-images/train/
+images/train/*
 
-images_faces/test/
+images_faces/test/*
 
-images_faces/train/
+images_faces/train/*
