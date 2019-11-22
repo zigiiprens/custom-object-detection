@@ -9,7 +9,7 @@ import sys
 import os
 import tensorflow as tf
 print("[INFO] TENSORFLOW VERSION " + tf.__version__)
-
+print(tf.test.is_gpu_available())
 
 def load_graph_def(model_path) -> tf.GraphDef:
     """
@@ -21,9 +21,10 @@ def load_graph_def(model_path) -> tf.GraphDef:
         graph_def: graph definition
 
     """
-    graph_def = tf.GraphDef()
-    with open(model_path, "rb") as f:
-        graph_def.ParseFromString(f.read())
+    with tf.device('/device:XLA_GPU:0'):
+        graph_def = tf.GraphDef()
+        with open(model_path, "rb") as f:
+            graph_def.ParseFromString(f.read())
 
     return graph_def
 
@@ -106,8 +107,14 @@ def run_ssd_mobilenet_v2_tf(image: Image, frozen_model_path: str, record_trace=F
                 fetched_timeline = timeline.Timeline(run_metadata.step_stats)
                 chrome_trace = fetched_timeline.generate_chrome_trace_format()
 
-                with open('ssd_mobilenet_v2_coco_2018_03_29/exported_model/' + trace_filename, 'w') as f:
-                    f.write(chrome_trace)
+                directPath = os.getcwd()
+                print(directPath)
+                with open('trained-inference/output_inference_graph_v1_faces/json/' + trace_filename, 'w+') as f:
+                    if f.closed:
+                        print("[INFO FILE] Closed")
+                    else:
+                        print("[INFO FILE] Openned")
+                        f.write(chrome_trace)
             else:
                 # Run multiple times to get meaningful statistic
                 for i in range(30):
@@ -121,7 +128,7 @@ def run_ssd_mobilenet_v2_tf(image: Image, frozen_model_path: str, record_trace=F
     return outputs, inference_time
 
 
-def run_ssd_mobilenet_v2_tf_optimized_CPU(image: Image, frozen_model_path: str, record_trace=False, trace_filename="ssd_mobilenet_v2.json"):
+def run_ssd_mobilenet_v2_tf_optimized_CPU(image: Image, frozen_model_path: str, record_trace=False, trace_filename="ssd_mobilenet_v2_cpu.json"):
     """ Run the model and report the average inference time, return inference time and output for sanity check """
     input_tensor_name = "image_tensor:0"
     output_tensor_names = [
@@ -169,7 +176,10 @@ def run_ssd_mobilenet_v2_tf_optimized_CPU(image: Image, frozen_model_path: str, 
                 fetched_timeline = timeline.Timeline(run_metadata.step_stats)
                 chrome_trace = fetched_timeline.generate_chrome_trace_format()
 
-                with open('ssd_mobilenet_v2_coco_2018_03_29/exported_model/' + trace_filename, 'w') as f:
+                directPath = os.getcwd()
+                print(directPath)
+                with open('trained-inference/output_inference_graph_v1_faces/json/' + trace_filename, 'w+') as f:                    
+                    print("[INFO FILE] Openned")
                     f.write(chrome_trace)
             else:
                 # Run multiple times to get meaningful statistic
@@ -191,16 +201,16 @@ MODEL_PATH = os.path.join(
 
 # Download image
 ssd_mobilenet_v2_origin_path = MODEL_PATH
-image = get_iamge_by_url(
-    "https://leblogdeflorencia.files.wordpress.com/2011/04/img_9962.jpg")
+#image = get_iamge_by_url("https://leblogdeflorencia.files.wordpress.com/2011/04/img_9962.jpg")
+image = Image.open("images/test/person_014.jpg")
 
 # Run test
 outputs, inference_time = run_ssd_mobilenet_v2_tf(
-    image, ssd_mobilenet_v2_origin_path)
-print(inference_time)
+    image, ssd_mobilenet_v2_origin_path,True)
+print("[INFO] Normal " + str(inference_time))
 outputs, inference_time_optimized_CPU = run_ssd_mobilenet_v2_tf_optimized_CPU(
-    image, ssd_mobilenet_v2_origin_path)
-print(inference_time_optimized_CPU)
+    image, ssd_mobilenet_v2_origin_path,True)
+print("[INFO] With CPU optimized " + str(inference_time_optimized_CPU))
 
 # Save resutl to disk, for simplicity, we use JSON here
 tf_result = list(inference_time)
