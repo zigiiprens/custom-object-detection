@@ -144,7 +144,8 @@ sh export.sh
 	
 ## Run and test model
 
-1. Run ```python3 webcam.py```
+1. Run ```python3 webcam.py``` to work with generated TF model
+2. Run ```sh cameraTFTRT.sh``` to work with optimized TRT model
 
 	
 
