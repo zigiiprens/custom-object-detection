@@ -21,27 +21,29 @@ LIB_FILE = os.path.abspath(os.path.join(DIR_NAME, 'lib/libflattenconcat.so'))
 MODEL_SPECS = {
     'inference/output_inference_graph_v1_faces/trt/saved_model.pb': {
         'input_pb':   os.path.abspath(os.path.join(
-                          DIR_NAME, 'saved_model.pb')),
+            DIR_NAME, 'saved_model.pb')),
         'tmp_uff':    os.path.abspath(os.path.join(
-                          DIR_NAME, 'tmp_saved_model.uff')),
+            DIR_NAME, 'tmp_saved_model.uff')),
         'output_bin': os.path.abspath(os.path.join(
-                          DIR_NAME, 'TRT_ssd_saved_model.bin')),
+            DIR_NAME, 'TRT_ssd_saved_model.bin')),
         'num_classes': 1,
         'min_size': 0.2,
         'max_size': 0.95,
-        'input_order': [1, 0, 2],  # order of loc_data, conf_data, priorbox_data
+        # order of loc_data, conf_data, priorbox_data
+        'input_order': [1, 0, 2],
     },
     'ssd_mobilenet_v1_coco': {
         'input_pb':   os.path.abspath(os.path.join(
-                          DIR_NAME, 'ssd_mobilenet_v1_coco.pb')),
+            DIR_NAME, 'ssd_mobilenet_v1_coco.pb')),
         'tmp_uff':    os.path.abspath(os.path.join(
-                          DIR_NAME, 'tmp_v1_coco.uff')),
+            DIR_NAME, 'tmp_v1_coco.uff')),
         'output_bin': os.path.abspath(os.path.join(
-                          DIR_NAME, 'TRT_ssd_mobilenet_v1_coco.bin')),
+            DIR_NAME, 'TRT_ssd_mobilenet_v1_coco.bin')),
         'num_classes': 91,
         'min_size': 0.2,
         'max_size': 0.95,
-        'input_order': [0, 2, 1],  # order of loc_data, conf_data, priorbox_data
+        # order of loc_data, conf_data, priorbox_data
+        'input_order': [0, 2, 1],
     },
 }
 INPUT_DIMS = (3, 300, 300)
@@ -121,7 +123,8 @@ def add_plugin(graph, model, spec):
         "Preprocessor": Input,
         "ToFloat": Input,
         "image_tensor": Input,
-        "MultipleGridAnchorGenerator/Concatenate": concat_priorbox,  # for 'ssd_mobilenet_v1_coco'
+        # for 'ssd_mobilenet_v1_coco'
+        "MultipleGridAnchorGenerator/Concatenate": concat_priorbox,
         "Concatenate": concat_priorbox,  # for other models
         "concat": concat_box_loc,
         "concat_1": concat_box_conf
@@ -144,7 +147,7 @@ def main():
     # initialize
     """
     TensorRT on Ubuntu 18.04 Desktop is istalled in <usr/src/tensorrt/> but the only directory available is <bin/>.
-    We need to install tensorRT 5.1.5 deve libs and compile <uff/> in order to use <libflattenconcat.so> shared library.
+    We need to install tensorRT 5.1.5 dev libs and compile <uff/> in order to use <libflattenconcat.so> shared library.
     """
     ctypes.CDLL(LIB_FILE)
     TRT_LOGGER = trt.Logger(trt.Logger.INFO)

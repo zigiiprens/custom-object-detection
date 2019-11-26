@@ -1,4 +1,4 @@
-"""trt_ssd.py
+"""runneronJetsonNANO.py
 This script demonstrates how to do real-time object detection with
 TensorRT optimized Single-Shot Multibox Detector (SSD) engine.
 """
