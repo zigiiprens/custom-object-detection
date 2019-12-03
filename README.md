@@ -9,6 +9,10 @@ This is about custom object detector using tensorflow object detection API. In t
 1. Download the images of the object what you want to detect.
 2. Download the [tensorflow models](https://github.com/tensorflow/models) repo and do installation steps in which is given at [object detection](https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/installation.md).
 
+# OR
+
+1. Run this the ```requirement.sh``` file somewhere.
+
 ## Labeling image and exporting csv
 
 1. Labeling image is main the process of object detection. It is the process of adding bounding boxes to the objects in the images.

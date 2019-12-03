@@ -26,10 +26,10 @@ from utils.visualization import BBoxVisualization
 
 
 # Constants
-DEFAULT_MODEL = 'trained-inference/output_inference_graph_v1_faces/frozen_inference_graph.pb'
-DEFAULT_LABELMAP = 'training_faces/facelabelmap.pbtxt'
+DEFAULT_MODEL = 'trained-inference/output_inference_graph_v3_2_faces/trt/ssd_mobilenet_v2_quantized_300x300_coco_trt.pb'
+DEFAULT_LABELMAP = 'training_faces_v3/facelabelmap.pbtxt'
 WINDOW_NAME = 'CameraTFTRTDemo'
-BBOX_COLOR = (0, 255, 0)  # green
+BBOX_COLOR = (255, 0, 0)  # green
 
 
 def parse_args():
@@ -76,7 +76,7 @@ def draw_help_and_fps(img, fps):
     """Draw help message and fps number at top-left corner of the image."""
     help_text = "'Esc' to Quit, 'H' for FPS & Help, 'F' for Fullscreen"
     font = cv2.FONT_HERSHEY_PLAIN
-    line = cv2.LINE_AA
+    line = cv2.LINE_8
 
     fps_text = 'FPS: {:.1f}'.format(fps)
     cv2.putText(img, help_text, (11, 20), font, 1.0, (32, 32, 32), 4, line)
@@ -103,6 +103,7 @@ def loop_and_detect(cam, tf_sess, conf_th, vis, od_type):
     show_fps = True
     full_scrn = False
     fps = 0.0
+    counter = 0
     tic = time.time()
     while True:
         if cv2.getWindowProperty(WINDOW_NAME, 0) < 0:
@@ -111,9 +112,21 @@ def loop_and_detect(cam, tf_sess, conf_th, vis, od_type):
             break
 
         img = cam.read()
+        # count the frames
+        counter += 1
+        ret = False
+
         if img is not None:
+            """while ret != True:
+                if (counter%50 == 0):
+                    ret = cv2.imwrite("temp/" + str(counter) + ".jpg", img)
+                else:
+                    break
+            """
             box, conf, cls = detect(img, tf_sess, conf_th, od_type=od_type)
+
             img = vis.draw_bboxes(img, box, conf, cls)
+
             if show_fps:
                 img = draw_help_and_fps(img, fps)
             cv2.imshow(WINDOW_NAME, img)
@@ -131,6 +144,7 @@ def loop_and_detect(cam, tf_sess, conf_th, vis, od_type):
         elif key == ord('F') or key == ord('f'):  # Toggle fullscreen
             full_scrn = not full_scrn
             set_full_screen(full_scrn)
+            
 
 
 def main():
@@ -144,10 +158,20 @@ def main():
     logger.info('called with args: %s' % args)
 
     # build the class (index/name) dictionary from labelmap file
-    logger.info('reading label map')
-    cls_dict = read_label_map(args.labelmap_file)
+    
 
-    pb_path = './trained-inference/output_inference_graph_v1_faces/trt/{}_trt.pb'.format(args.model)
+
+    # This is loading loaded labelmap
+    cls_dict = read_label_map(args.labelmap_file)
+    logger.info('reading label map')
+
+    # This is loading default labelmap
+    #cls_dict = read_label_map(DEFAULT_LABELMAP)
+    #logger.info('reading label map: %s' %DEFAULT_LABELMAP)
+
+
+
+    pb_path = './trained-inference/output_inference_graph_v2_faces/trt/{}_trt.pb'.format(args.model)
     log_path = './logs/{}_trt'.format(args.model)
     if args.do_build:
         logger.info('building TRT graph and saving to pb: %s' % pb_path)
@@ -158,9 +182,18 @@ def main():
     cam.open()
     if not cam.is_opened:
         sys.exit('Failed to open camera!')
+    
 
-    logger.info('loading TRT graph from pb: %s' % pb_path)
+
+    # This is using loaded model
     trt_graph = load_trt_pb(pb_path)
+    logger.info('loading TRT graph from pb: %s' % pb_path)
+
+    # This is always using default model
+    #trt_graph = load_trt_pb(DEFAULT_MODEL)
+    #logger.info('loading TRT graph from pb: %s' % DEFAULT_MODEL)
+
+
 
     logger.info('starting up TensorFlow session')
     tf_config = tf.ConfigProto()

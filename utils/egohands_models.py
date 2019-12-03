@@ -4,8 +4,8 @@
 
 SUPPORTED_MODELS = {
     'ssd_mobilenet_v2_quantized_300x300_coco': {
-        'config_path': 'training_faces/ssd_mobilenet_v2_quantized_300x300_coco.config',
-        'checkpoint_path': 'training_faces/model.ckpt-200',
+        'config_path': 'training_faces_v3/ssd_mobilenet_v2_quantized_300x300_coco.config',
+        'checkpoint_path': 'training_faces_v3/model.ckpt-253',
     },
     'ssd_mobilenet_v1_egohands': {
         'config_path': 'data/ssd_mobilenet_v1_egohands.config',

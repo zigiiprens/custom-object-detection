@@ -15,17 +15,17 @@ import tensorrt as trt
 import graphsurgeon as gs
 
 
-DIR_NAME = os.path.dirname(__file__)
-print("[INFO DIRNAME] " + DIR_NAME)
+DIR_NAME = os.path.dirname(os.path.abspath(__file__))
+print("[INFO DIRNAME] " + str(DIR_NAME))
 LIB_FILE = os.path.abspath(os.path.join(DIR_NAME, 'lib/libflattenconcat.so'))
 MODEL_SPECS = {
-    'inference/output_inference_graph_v1_faces/trt/saved_model.pb': {
+    'frozen_inference_graph.pb': {
         'input_pb':   os.path.abspath(os.path.join(
-            DIR_NAME, 'saved_model.pb')),
+            DIR_NAME, 'trained-inference/output_inference_graph_v1_faces/frozen_inference_graph.pb')),
         'tmp_uff':    os.path.abspath(os.path.join(
-            DIR_NAME, 'tmp_saved_model.uff')),
+            DIR_NAME, 'trained-inference/output_inference_graph_v1_faces/saved_model/tmp_saved_model.uff')),
         'output_bin': os.path.abspath(os.path.join(
-            DIR_NAME, 'TRT_ssd_saved_model.bin')),
+            DIR_NAME, 'trained-inference/output_inference_graph_v1_faces/saved_model/TRT_ssd_saved_model.bin')),
         'num_classes': 1,
         'min_size': 0.2,
         'max_size': 0.95,
@@ -39,7 +39,7 @@ MODEL_SPECS = {
             DIR_NAME, 'tmp_v1_coco.uff')),
         'output_bin': os.path.abspath(os.path.join(
             DIR_NAME, 'TRT_ssd_mobilenet_v1_coco.bin')),
-        'num_classes': 91,
+        'num_classes': 1,
         'min_size': 0.2,
         'max_size': 0.95,
         # order of loc_data, conf_data, priorbox_data
@@ -47,7 +47,7 @@ MODEL_SPECS = {
     },
 }
 INPUT_DIMS = (3, 300, 300)
-DEBUG_UFF = False
+DEBUG_UFF = True
 
 
 def add_plugin(graph, model, spec):
@@ -55,7 +55,7 @@ def add_plugin(graph, model, spec):
     Reference:
     1. https://github.com/AastaNV/TRT_object_detection/blob/master/config/model_ssd_mobilenet_v1_coco_2018_01_28.py
     2. https://github.com/AastaNV/TRT_object_detection/blob/master/config/model_ssd_mobilenet_v2_coco_2018_03_29.py
-    3. https://devtalk.nvidia.com/default/topic/1050465/jetson-nano/how-to-write-config-py-for-converting-ssd-mobilenetv2-to-uff-format/post/5333033/#5333033
+    3. https://devtalk.nvidia.com/default/topic/1050465/jetsotrained-inference/output_inference_graph_v1_faces/trt/saved_model.pbn-nano/how-to-write-config-py-for-converting-ssd-mobilenetv2-to-uff-format/post/5333033/#5333033
     """
     numClasses = spec['num_classes']
     minSize = spec['min_size']
@@ -71,16 +71,16 @@ def add_plugin(graph, model, spec):
     Input = gs.create_plugin_node(
         name="Input",
         op="Placeholder",
-        shape=(1,) + INPUT_DIMS
+        shape=[1, 3, 300, 300]
     )
 
     PriorBox = gs.create_plugin_node(
-        name="MultipleGridAnchorGenerator",
+        name="GridAnchor",
         op="GridAnchor_TRT",
-        minSize=minSize,  # was 0.2
-        maxSize=maxSize,  # was 0.95
+        minSize=0.2,
+        maxSize=0.95,
         aspectRatios=[1.0, 2.0, 0.5, 3.0, 0.33],
-        variance=[0.1, 0.1, 0.2, 0.2],
+        variance=[0.1,0.1,0.2,0.2],
         featureMapShapes=[19, 10, 5, 3, 2, 1],
         numLayers=6
     )
@@ -133,9 +133,9 @@ def add_plugin(graph, model, spec):
     graph.collapse_namespaces(namespace_plugin_map)
     graph.remove(graph.graph_outputs, remove_exclusive_dependencies=False)
     graph.find_nodes_by_op("NMS_TRT")[0].input.remove("Input")
-    if model == 'ssd_mobilenet_v1_coco':
+    """if model == 'ssd_mobilenet_v1_coco':
         graph.find_nodes_by_name("Input")[0].input.remove("image_tensor:0")
-
+    """
     return graph
 
 
@@ -160,12 +160,23 @@ def main():
         gs.DynamicGraph(spec['input_pb']),
         model,
         spec)
-    _ = uff.from_tensorflow(
+    """_ = uff.from_tensorflow(
         dynamic_graph.as_graph_def(),
         output_nodes=['NMS'],
         output_filename=spec['tmp_uff'],
         text=True,
         debug_mode=DEBUG_UFF)
+        """
+        _= uff.from_tensorflow(
+        dynamic_graph.as_graph_def(),
+        output_nodes=['NMS'],
+        output_filename=spec['tmp_uff'],
+        quiet=True,
+        list_nodes=True,
+        test=True,
+        return_graph_info=True,
+        debug_mode=DEBUG_UFF
+        )
     with trt.Builder(TRT_LOGGER) as builder, builder.create_network() as network, trt.UffParser() as parser:
         builder.max_workspace_size = 1 << 28
         builder.max_batch_size = 1

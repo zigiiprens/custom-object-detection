@@ -27,8 +27,8 @@ print("[INFO] TENSORFLOW VERSION " + tf.__version__)
 
 
 # Define the video stream
-cap = cv2.VideoCapture("rtsp://10.42.0.202:554/MainStream")
-# cap = cv2.VideoCapture(0)  # Change only if you have more than one webcams
+#cap = cv2.VideoCapture("rtsp://10.42.0.202:554/MainStream")
+cap = cv2.VideoCapture(0)  # Change only if you have more than one webcams
 
 # What model
 directPath = os.getcwd()
@@ -49,6 +49,10 @@ if str(args.model_option) == "faces":
     # List of the strings that is used to add correct label for each box.
     PATH_TO_LABELS = os.path.join(
         directPath, 'training_faces/facelabelmap.pbtxt')
+
+    # Number of classes to detect
+    NUM_CLASSES = 1
+
 elif str(args.model_option) == "person":
     MODEL_NAME = os.path.join(
         directPath, 'trained-inference/output_inference_graph_v1')
@@ -59,8 +63,23 @@ elif str(args.model_option) == "person":
     # List of the strings that is used to add correct label for each box.
     PATH_TO_LABELS = os.path.join(directPath, 'training/labelmap.pbtxt')
 
-# Number of classes to detect
-NUM_CLASSES = 1
+    # Number of classes to detect
+    NUM_CLASSES = 1
+
+elif str(args.model_option) == "mult":
+    MODEL_NAME = os.path.join(
+        directPath, 'trained-inference/output_inference_graph_v3_2_faces')
+
+    # Path to frozen detection graph. This is the actual model that is used for the object detection.
+    PATH_TO_CKPT = MODEL_NAME + '/frozen_inference_graph.pb'
+
+    # List of the strings that is used to add correct label for each box.
+    PATH_TO_LABELS = os.path.join(directPath, 'training_faces_v3/facelabelmap.pbtxt')
+
+    # Number of classes to detect
+    NUM_CLASSES = 2
+
+
 
 
 # Load a (frozen) Tensorflow model into memory.
@@ -94,7 +113,7 @@ with detection_graph.as_default():
     with tf.compat.v1.Session(graph=detection_graph) as sess:
         while True:
             frameCount += 1
-            if frameCount > 20:
+            if frameCount > 1:
 
                 # Read frame from camera
                 ret, image_np = cap.read()

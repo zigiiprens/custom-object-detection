@@ -61,15 +61,15 @@ def open_cam_rtsp(uri, width, height, latency):
     if uri == "fake":
         gst_str = "rtsp://10.42.0.202:554/MainStream"
         return cv2.VideoCapture(gst_str)
-        
-    gst_str = ('rtspsrc location={} latency={} ! '
-               'rtph264depay ! h264parse ! omxh264dec ! '
-               'nvvidconv ! '
-               'video/x-raw, width=(int){}, height=(int){}, '
-               'format=(string)BGRx ! videoconvert ! '
-               'appsink').format(uri, latency, width, height)
+    else:
+        gst_str = ('rtspsrc location={} latency={} ! '
+                'rtph264depay ! h264parse ! omxh264dec ! '
+                'nvvidconv ! '
+                'video/x-raw, width=(int){}, height=(int){}, '
+                'format=(string)BGRx ! videoconvert ! '
+                'appsink').format(uri, latency, width, height)
 
-    return cv2.VideoCapture(gst_str, cv2.CAP_GSTREAMER)
+        return cv2.VideoCapture(gst_str, cv2.CAP_GSTREAMER)
 
 
 def open_cam_usb(dev, width, height):
