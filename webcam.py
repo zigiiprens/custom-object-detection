@@ -68,17 +68,30 @@ elif str(args.model_option) == "person":
 
 elif str(args.model_option) == "mult":
     MODEL_NAME = os.path.join(
-        directPath, 'trained-inference/output_inference_graph_v3_2_faces')
+        directPath, 'trained-inference/output_inference_graph_v4_faces')
 
     # Path to frozen detection graph. This is the actual model that is used for the object detection.
     PATH_TO_CKPT = MODEL_NAME + '/frozen_inference_graph.pb'
 
     # List of the strings that is used to add correct label for each box.
-    PATH_TO_LABELS = os.path.join(directPath, 'training_faces_v3/facelabelmap.pbtxt')
+    PATH_TO_LABELS = os.path.join(directPath, 'training_faces_v1/facelabelmap.pbtxt')
 
     # Number of classes to detect
-    NUM_CLASSES = 2
+    NUM_CLASSES = 3
 
+
+elif str(args.model_option) == "mult3":
+    MODEL_NAME = os.path.join(
+        directPath, 'trained-inference/output_inference_graph_v3_3_faces')
+
+    # Path to frozen detection graph. This is the actual model that is used for the object detection.
+    PATH_TO_CKPT = MODEL_NAME + '/frozen_inference_graph.pb'
+
+    # List of the strings that is used to add correct label for each box.
+    PATH_TO_LABELS = os.path.join(directPath, 'training_faces_v2/facelabelmap.pbtxt')
+
+    # Number of classes to detect
+    NUM_CLASSES = 3
 
 
 
@@ -145,13 +158,31 @@ with detection_graph.as_default():
                     np.squeeze(scores),
                     category_index,
                     use_normalized_coordinates=True,
-                    line_thickness=8)
+                    min_score_thresh=0.70,
+                    line_thickness=2)
+                # Visualization of coordinates of the results of a detection.
+                # This is a tuned version of the original
+                # "visualize_boxes_and_labels_on_image_array" function under <visualization_utils.py>
+                coordinates = vis_util.return_coordinates(
+                    image_np,
+                    np.squeeze(boxes),
+                    np.squeeze(classes).astype(np.int32),
+                    np.squeeze(scores),
+                    category_index,
+                    use_normalized_coordinates=True,
+                    min_score_thresh=0.70,
+                    line_thickness=2)
+                
+                print("\n")
+                print("[INFO COORDINATES] => " + str(coordinates))
+                print("\n")
 
                 # Display output
                 cv2.imshow('object detection',
                            cv2.resize(image_np, (1200, 900)))
 
-                if cv2.waitKey(25) & 0xFF == ord('q'):
+                key = cv2.waitKey(1)
+                if key == 27:  # ESC key: quit program
                     cv2.destroyAllWindows()
                     break
 
